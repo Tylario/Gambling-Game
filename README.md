@@ -1,7 +1,7 @@
 # Gambling-Game
 Test your luck
 
-[Try it out](https://github.com/tylario/Gambling-Game/index.html)
+[Try it out](https://tylario.github.io/Gambling-Game/index.html)
 
 Wager some money and hold down the button until you want to cash out and take your profit.
 
