@@ -3,7 +3,7 @@
 		<title>
 			Gambling Game
 		</title>
-		<link rel="icon" type="image/png" src="content/dice.png"/>
+		<link rel="icon" type="image/png" href="content/dice.png"/>
 	</head>
 	<style>
 		
@@ -23,14 +23,22 @@
 		#wager{
 			position:absolute;
 			text-align:center;
-			bottom:180px;
+			bottom:210px;
+			width:100%;
+			height:20px;
+		}
+		
+		#fast_forward{
+			position:absolute;
+			text-align:center;
+			bottom:70px;
 			width:100%;
 			height:20px;
 		}
 		
 		#bet_button{
 			position:absolute;
-			text-align:center;
+			
 			bottom:100px;
 			width:100%;
 			height:50px;
@@ -38,12 +46,14 @@
 		
 		#button{
 			position:absolute;
-			height:75px;
-			width:90px;
+			padding-top:15px;
+			height:65px;
+			width:88px;
 			border-radius:5px;
 			border:1px solid black;
 			color:black;
 			left:calc(125px - 45px);
+			bottom: 0px;
 		}
 		
 		#multiplier{
@@ -88,7 +98,17 @@
 			top:90px;
 			left:90px;
 			height:250px;
-			width:600px;
+			width:100%;
+			color:lightgray;
+		}
+		
+		#all_time_record{
+			position:absolute;
+			top:90px;
+			text-align:right;
+			left:90px;
+			height:250px;
+			width:575;
 			color:lightgray;
 		}
 		
@@ -99,6 +119,9 @@
 		<div id="all_time_title">
 			Career Chart
 		</div>
+		<div id="all_time_record">
+		
+		</div>
 		<div id="money">
 			<center>
 				<span id="money"></span>
@@ -108,6 +131,9 @@
 		Multiplier: <span id="multiplier_text"></span>
 		</div>
 		<div id="bet">
+			<div id="fast_forward">
+			<input type="button" style="text-align:center;border:1px solid black; background:white; height:20px; border-radius:5px; width:90px;" value="Fast Forward" id="ff" onmousedown="fast_forward()" onmouseup="normal_speed()">
+			</div>
 			<div id="wager">
 				Wager:
 				<br>
@@ -115,7 +141,7 @@
 			</div>
 			<div id="bet_button">
 				<center>
-					<div id="button" onmousedown="hold()" onmouseup="out()"><br><span id="button_text"></span></div>
+					<div id="button" onmousedown="hold()" onmouseup="out()"></div>
 				</center>
 			</div>
 		</div>
@@ -135,22 +161,20 @@
 		var time = 0;
 		var alltime = 0;
 		var canbet = true;
+		var keepgoing = false;
+		var record = 100;
 		
+		set();
 		init();
-		trueinit();
 		
-		function trueinit(){
-		canvas = document.getElementById('graph');
-		alltimegraph = document.getElementById('all_time');
+		function init(){
+			document.getElementById("all_time_record").innerText = "Record: 100";
+			canvas = document.getElementById('graph');
+			alltimegraph = document.getElementById('all_time');
 
 			if (canvas.getContext) {
 				ctx = canvas.getContext('2d');
-				//left, top, width, height
-				
-				
 				ctx.fillStyle = 'rgba(0, 200, 0, 1 )';
-				//ctx.fillRect(0, (window.innerHeight-174), 6, 6);
-
 			}
 			alltimegraph.getContext('2d').fillStyle = 'rgba(230, 230, 230, 1)'
 			alltimegraph.getContext('2d').fillRect(0, 150, 600, 1)
@@ -159,62 +183,162 @@
 		}
 			
 			
-		function init(){
-			document.getElementById("button_text").innerText = buttonText;
+		function set(){
+			document.getElementById("button").innerText = buttonText;
 			document.getElementById("money").innerText = Math.floor(100*money)/100 + " Coins";
 
 		}
 		
 		function hold(){
-			if(canbet){
-				canbet = false;
-			if(document.getElementById("wager_value").value === "Palmer"){
-				alert("This program is dedicated to my friend, Palmer, maybe, with practice, he will not lose all my betting money. - Tyler Hudson");}
-			if(document.getElementById("wager_value").value === "Mitchell"){
-				alert("You wish you could program - Tyler Hudson");
-			}
-			if(document.getElementById("wager_value").value === "Jake"){
-				alert("Thanks for the bits, don't murder my money again - Tyler Hudson");
-			}
-			if(document.getElementById("wager_value").value === "Drew"){
-				alert("You've ruined all my previous versions of this game and you're a grammer Nazi... thanks for that...? - Tyler Hudson");
-			}
-			if(document.getElementById("wager_value").value<=money && document.getElementById("wager_value").value>=1 ){
-			setWager = document.getElementById("wager_value").value;
-			money = money - document.getElementById("wager_value").value;
-			betting = true;
-			document.getElementById("button").style.background = "#55ff55";
-			} else {
-				alert("Please wager a valid number of coins");
-				setWager = 0;
-			}
-			
-			init();
+			if(keepgoing){} else {
+				if(canbet){
+					
+					if(document.getElementById("wager_value").value === "Palmer"){
+						alert("This program is dedicated to my friend, Palmer, maybe, with practice, he will not lose all my betting money. - Tyler Hudson");
+					}
+					if(document.getElementById("wager_value").value === "Mitchell"){
+						alert("You wish you could program - Tyler Hudson");
+					}
+					if(document.getElementById("wager_value").value === "Jake"){
+					alert("Thanks for the bits, don't murder my money again - Tyler Hudson");
+					}
+					
+					if(document.getElementById("wager_value").value === "Drew"){
+					alert("You've ruined all my previous versions of this game and you're a grammer Nazi... thanks for that...? - Tyler Hudson");
+					}
+					if(document.getElementById("wager_value").value<=money && document.getElementById("wager_value").value>=1 ){
+					canbet = false;
+					setWager = document.getElementById("wager_value").value;
+					money = money - document.getElementById("wager_value").value;
+					betting = true;
+					document.getElementById("button").style.background = "#55ff55";
+					keepgoing = true;
+					} else {
+						alert("Please wager a valid number of coins");
+						setWager = 0;
+					}
+					
+					set();
+					
+				}
 			}
 		}
 		
 		
 		setInterval(function(){
-			if(betting){
-				document.getElementById("button").style.marginLeft = Math.random()*3-1.5;
-				document.getElementById("button").style.marginTop = Math.random()*3-1.5;
-
-				buttonText = "Cash Out At " + (Math.floor(100*setWager*multiplier)/100); 
-				init();
+			if(betting || keepgoing){
+				
+				if(betting){
+					buttonText = "Cash Out At " + (Math.floor(100*setWager*multiplier)/100);
+					document.getElementById("button").style.marginLeft = Math.random()*3-1.5;
+					document.getElementById("button").style.marginTop = Math.random()*3-1.5;
+				} else {
+					buttonText = "Wait...";
+				}
+				
+				set();
+				
 				if(Math.random()>1/1387){
 						
-						multiplier = multiplier * 1.0005
-				//		document.getElementById("graph").style.transform = "scale(" + 1300/time +")";
+					multiplier = multiplier * 1.0005;
+					document.getElementById("multiplier_text").innerText = Math.floor(multiplier*100)/100;
+					ctx.fillStyle = 'rgba(0, 200, 0, 1 ';
+					ctx.fillRect(time*2, (598 -((multiplier+0.4)*(multiplier+0.4))), 6, 6);
+					time=time+1/13;
+					alltimegraph.getContext('2d').fillStyle = 'rgba(0, 255, 0, 1)'
+				} else {
+					time = 0;
+					keepgoing = false;
+					alltimegraph.getContext('2d').fillStyle = 'rgba(255, 0, 0, 1)'
+					bustedat = multiplier;
+					multiplier = 0;
+					out();
+					multiplier = 1;
+					document.getElementById("button").style.background = "#ff5555";
+					document.getElementById("multiplier").style.color = "red";
+					document.getElementById("multiplier_text").innerText = "Crashed at " + Math.floor(100*bustedat)/100;
+					setTimeout(function(){
+					
+						if(betting){}else{
+							
+							document.getElementById("button").style.background = "#ffffff";
+						}
+						
+						buttonText = "Hold To Bet";
+						document.getElementById("multiplier").style.color = "black";
+						document.getElementById("multiplier_text").innerText = "";
+						ctx.fillStyle = 'rgba(255, 255, 255, 1 ';
+						ctx.fillRect(0, 0, 6000, 6000);
+						set();
+					}, 3000)
+				}
+			}
+		}, 9)
+		
+		
+		function out(){
+			if(betting){
+				
+				document.getElementById("button").style.background = "#ffffff";
+				betting = false;
+				money = money + setWager*multiplier;
+				if(multiplier > 0.5){
+					buttonText = "You profited " + Math.floor(((setWager*multiplier)-setWager)*100)/100 + " coins";
+					document.getElementById("multiplier").style.color = "#55ff55";
+					document.getElementById("button").style.background = "#55ff55";
+				} else {
+					buttonText = "You lost " + Math.floor(100*setWager)/100 + " coins";
+				}
+				if(multiplier>0.5){
+					
+				}
+				document.getElementById("graph").style.transform = "scale(1)";
+				document.getElementById("multiplier_text").innerText = "";
+				set();
+				
+				alltime++;
+				alltimegraph.getContext('2d').fillRect(alltime, (250-money), 3, 2)
+				if(money>record){
+					record = money;
+					document.getElementById("all_time_record").innerText = "Record: " + Math.floor(100*money)/100;
+				}
+				setTimeout(function(){
+					buttonText = "Hold To Bet"
+					canbet = true;
+					document.getElementById("multiplier").style.color = "black";
+					document.getElementById("button").style.background = "white";
+					set();
+				}, 3000)
+			}
+		}
+		
+		function fast_forward(){
+			if(keepgoing){
+				while(keepgoing){
+				if(betting){
+					buttonText = "Cash Out At " + (Math.floor(100*setWager*multiplier)/100);
+					document.getElementById("button").style.marginLeft = Math.random()*3-1.5;
+					document.getElementById("button").style.marginTop = Math.random()*3-1.5;
+				} else {
+					buttonText = "Wait...";
+				}
+				set();
+				if(Math.random()>1/1387){
+						
+						multiplier = multiplier * 1.0005;
 						document.getElementById("multiplier_text").innerText = Math.floor(multiplier*100)/100;
 						ctx.fillStyle = 'rgba(0, 200, 0, 1 ';
-						ctx.fillRect(time*2, (598 -((multiplier+0.3)*(multiplier+0.3))), 6, 6);
+						ctx.fillRect(time*2, (598 -((multiplier+0.4)*(multiplier+0.4))), 6, 6);
 						time=time+1/13;
 						alltimegraph.getContext('2d').fillStyle = 'rgba(0, 255, 0, 1)'
 					} else {
+						time = 0;
+						keepgoing = false;
 						alltimegraph.getContext('2d').fillStyle = 'rgba(255, 0, 0, 1)'
 						bustedat = multiplier;
 						multiplier = 0;
 						out();
+						multiplier = 1;
 						document.getElementById("button").style.background = "#ff5555";
 						document.getElementById("multiplier").style.color = "red";
 						document.getElementById("multiplier_text").innerText = "Crashed at " + Math.floor(100*bustedat)/100;
@@ -228,45 +352,13 @@
 							document.getElementById("multiplier_text").innerText = "";
 							ctx.fillStyle = 'rgba(255, 255, 255, 1 ';
 							ctx.fillRect(0, 0, 6000, 6000);
-							
+							buttonText = "Hold To Bet";
+							set();
 						}, 3000)
 					}
 			}
-		}, 9)
+		}}
 		
-		
-		function out(){
-			if(betting){
-				document.getElementById("button").style.background = "#ffffff";
-				betting = false;
-				money = money + setWager*multiplier;
-				if(multiplier > 0.5){
-					buttonText = "You profited " + Math.floor(((setWager*multiplier)-setWager)*100)/100 + " coins";
-					document.getElementById("multiplier").style.color = "#55ff55";
-					document.getElementById("button").style.background = "#55ff55";
-				} else {
-					buttonText = "You lost" + Math.floor(100*setWager)/100 + "coins";
-				}
-				if(multiplier>0.5){
-					ctx.fillStyle = 'rgba(255, 255, 255, 1 ';
-					ctx.fillRect(0, 0, 6000, 6000);
-				}
-				document.getElementById("graph").style.transform = "scale(1)";
-				multiplier = 1;
-				document.getElementById("multiplier_text").innerText = "";
-				init();
-				time = 0;
-				alltime++;
-				alltimegraph.getContext('2d').fillRect(alltime, (250-money), 3, 2)
-				setTimeout(function(){
-					buttonText = "Hold To Bet"
-					canbet = true;
-					document.getElementById("multiplier").style.color = "black";
-					document.getElementById("button").style.background = "white";
-					init();
-				}, 3000)
-			}
-		}
 		
 		
 	
